@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRON FORGE GYM</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #D4A017;
+    --gold-light: #F0C040;
+    --black: #0a0a0a;
+    --dark: #111111;
+    --dark2: #1a1a1a;
+    --gray: #2a2a2a;
+    --light-gray: #888;
+    --white: #f5f5f0;
+    --red: #C0392B;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ====== NAV ====== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(10,10,10,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212,160,23,0.2);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--white); }
+
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--light-gray);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cta {
+    background: var(--gold);
+    color: var(--black) !important;
+    padding: 0.6rem 1.5rem;
+    font-weight: 500 !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* ====== HERO ====== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 8rem 4rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, rgba(10,10,10,0.95) 40%, rgba(212,160,23,0.08) 100%),
+      url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600') center/cover no-repeat;
+    z-index: 0;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 0.4rem 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 12vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    -webkit-text-stroke: 1px var(--gold);
+    color: transparent;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--light-gray);
+    max-width: 480px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+  .btn-outline {
+    border: 1px solid rgba(245,245,240,0.3);
+    color: var(--white);
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: border-color 0.3s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+  .hero-stats {
+    position: absolute;
+    right: 4rem;
+    bottom: 4rem;
+    z-index: 1;
+    display: flex;
+    gap: 3rem;
+  }
+
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--light-gray);
+    margin-top: 0.3rem;
+  }
+
+  /* ====== MARQUEE ====== */
+  .marquee-wrap {
+    background: var(--gold);
+    overflow: hidden;
+    padding: 0.8rem 0;
+    white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
+  }
+  .marquee-track span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    color: var(--black);
+    margin: 0 2rem;
+  }
+  .marquee-track span.dot { color: rgba(0,0,0,0.4); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ====== SECTION TITLE ====== */
+  section { padding: 6rem 4rem; }
+  .section-tag {
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .section-subtitle {
+    color: var(--light-gray);
+    font-size: 1rem;
+    line-height: 1.8;
+    max-width: 500px;
+  }
+
+  /* ====== PROGRAMS ====== */
+  .programs { background: var(--dark); }
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    margin-top: 3.5rem;
+    border: 1px solid var(--gray);
+  }
+
+  .program-card {
+    background: var(--dark2);
+    padding: 2.5rem;
+    border-right: 1px solid var(--gray);
+    transition: background 0.3s;
+    cursor: default;
+  }
+  .program-card:hover { background: #1f1f1f; }
+
+  .program-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(212,160,23,0.1);
+    border: 1px solid rgba(212,160,23,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .program-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+    color: var(--white);
+  }
+
+  .program-card p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--light-gray);
+    margin-bottom: 1.5rem;
+  }
+
+  .program-link {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .program-link:hover { border-color: var(--gold); }
+
+  /* ====== PRICING ====== */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .plan-card {
+    background: var(--dark2);
+    border: 1px solid var(--gray);
+    padding: 2.5rem;
+    position: relative;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .plan-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+  .plan-card.featured {
+    border-color: var(--gold);
+    background: linear-gradient(160deg, #1f1c12 0%, var(--dark2) 100%);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -1px; right: 2rem;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 0.3rem 0.8rem;
+  }
+
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--light-gray);
+    margin-bottom: 1rem;
+  }
+
+  .plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--white);
+  }
+  .plan-price sup { font-size: 1.5rem; vertical-align: top; margin-top: 0.5rem; }
+  .plan-price sub { font-size: 1rem; color: var(--light-gray); }
+
+  .plan-divider {
+    height: 1px;
+    background: var(--gray);
+    margin: 1.5rem 0;
+  }
+
+  .plan-features { list-style: none; }
+  .plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+    color: var(--light-gray);
+    padding: 0.4rem 0;
+  }
+  .plan-features li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .plan-features li.inactive::before { background: var(--gray); }
+  .plan-features li.inactive { opacity: 0.4; }
+
+  .plan-btn {
+    display: block;
+    text-align: center;
+    margin-top: 2rem;
+    padding: 0.9rem;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .plan-btn-outline {
+    border: 1px solid var(--gray);
+    color: var(--white);
+  }
+  .plan-btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .plan-btn-gold { background: var(--gold); color: var(--black); font-weight: 500; }
+  .plan-btn-gold:hover { background: var(--gold-light); }
+
+  /* ====== TRAINERS ====== */
+  .trainers { background: var(--dark); }
+  .trainers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-top: 3.5rem;
+  }
+
+  .trainer-card { position: relative; overflow: hidden; }
+  .trainer-img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(30%);
+    transition: filter 0.4s, transform 0.4s;
+  }
+  .trainer-card:hover .trainer-img { filter: grayscale(0%); transform: scale(1.03); }
+
+  .trainer-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    padding: 2rem 1.5rem 1.5rem;
+  }
+
+  .trainer-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+  .trainer-role {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 0.2rem;
+  }
+
+  /* ====== TESTIMONIALS ====== */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .testimonial-card {
+    background: var(--dark2);
+    border: 1px solid var(--gray);
+    padding: 2rem;
+  }
+
+  .stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 2px; }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--light-gray);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .author-name { font-size: 0.9rem; font-weight: 500; }
+  .author-tag { font-size: 0.75rem; color: var(--light-gray); }
+
+  /* ====== CTA BANNER ====== */
+  .cta-banner {
+    background: var(--gold);
+    padding: 5rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .cta-banner h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--black);
+    line-height: 1;
+  }
+
+  .btn-dark {
+    background: var(--black);
+    color: var(--white);
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-block;
+    transition: background 0.3s;
+    white-space: nowrap;
+  }
+  .btn-dark:hover { background: #222; }
+
+  /* ====== FOOTER ====== */
+  footer {
+    background: #050505;
+    padding: 4rem 4rem 2rem;
+    border-top: 1px solid var(--gray);
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 4px;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .footer-desc {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: var(--light-gray);
+  }
+
+  .footer-col h4 {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.7rem; }
+  .footer-col ul li a {
+    font-size: 0.85rem;
+    color: var(--light-gray);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-col ul li a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--gray);
+    padding-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-bottom p { font-size: 0.8rem; color: var(--light-gray); }
+
+  .social-links { display: flex; gap: 1rem; }
+  .social-link {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--light-gray);
+    text-decoration: none;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .social-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ====== SCROLL ANIMATION ====== */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 6rem 1.5rem 4rem; }
+    .hero-stats { right: 1.5rem; bottom: 2rem; gap: 1.5rem; }
+    .stat-num { font-size: 2.5rem; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .cta-banner { padding: 3rem 1.5rem; }
+    footer { padding: 3rem 1.5rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">IRON<span>FORGE</span></a>
+  <ul class="nav-links">
+    <li><a href="#programs">Programs</a></li>
+    <li><a href="#trainers">Trainers</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#join" class="nav-cta">Join Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Est. 2010 &bull; Premium Fitness Club</div>
+    <h1>FORGE<br>YOUR <em>BEST</em><br>BODY</h1>
+    <p>State-of-the-art equipment, expert trainers, and a community that pushes you beyond your limits. No excuses. Only results.</p>
+    <div class="hero-btns">
+      <a href="#join" class="btn-primary">Start Free Trial</a>
+      <a href="#programs" class="btn-outline">View Programs</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">12K+</div>
+      <div class="stat-label">Members</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">40+</div>
+      <div class="stat-label">Trainers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">98%</div>
+      <div class="stat-label">Satisfaction</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>STRENGTH TRAINING</span><span class="dot">&#9679;</span>
+    <span>CARDIO</span><span class="dot">&#9679;</span>
+    <span>YOGA</span><span class="dot">&#9679;</span>
+    <span>CROSSFIT</span><span class="dot">&#9679;</span>
+    <span>BOXING</span><span class="dot">&#9679;</span>
+    <span>NUTRITION</span><span class="dot">&#9679;</span>
+    <span>PERSONAL TRAINING</span><span class="dot">&#9679;</span>
+    <span>CYCLING</span><span class="dot">&#9679;</span>
+    <span>ZUMBA</span><span class="dot">&#9679;</span>
+    <span>PILATES</span><span class="dot">&#9679;</span>
+    <span>STRENGTH TRAINING</span><span class="dot">&#9679;</span>
+    <span>CARDIO</span><span class="dot">&#9679;</span>
+    <span>YOGA</span><span class="dot">&#9679;</span>
+    <span>CROSSFIT</span><span class="dot">&#9679;</span>
+    <span>BOXING</span><span class="dot">&#9679;</span>
+    <span>NUTRITION</span><span class="dot">&#9679;</span>
+    <span>PERSONAL TRAINING</span><span class="dot">&#9679;</span>
+    <span>CYCLING</span><span class="dot">&#9679;</span>
+    <span>ZUMBA</span><span class="dot">&#9679;</span>
+    <span>PILATES</span><span class="dot">&#9679;</span>
+  </div>
+</div>
+
+<!-- PROGRAMS -->
+<section class="programs" id="programs">
+  <div class="section-tag">What We Offer</div>
+  <h2 class="section-title">OUR PROGRAMS</h2>
+  <p class="section-subtitle">From beginner to elite, every program is designed to deliver real, measurable results.</p>
+  <div class="programs-grid fade-in">
+    <div class="program-card">
+      <div class="program-icon">💪</div>
+      <h3>Strength & Power</h3>
+      <p>Build raw strength and muscle mass with our progressive overload programs. Guided by certified coaches.</p>
+      <a href="#" class="program-link">Learn More →</a>
+    </div>
+    <div class="program-card">
+      <div class="program-icon">🥊</div>
+      <h3>Boxing & MMA</h3>
+      <p>Burn fat and build killer conditioning with our high-intensity combat sports classes for all levels.</p>
+      <a href="#" class="program-link">Learn More →</a>
+    </div>
+    <div class="program-card">
+      <div class="program-icon">🔥</div>
+      <h3>HIIT & CrossFit</h3>
+      <p>Push your limits with high-intensity functional training. Maximum results in minimum time.</p>
+      <a href="#" class="program-link">Learn More →</a>
+    </div>
+    <div class="program-card">
+      <div class="program-icon">🧘</div>
+      <h3>Yoga & Mobility</h3>
+      <p>Recover smarter, move better. Our yoga and mobility sessions complement every training style.</p>
+      <a href="#" class="program-link">Learn More →</a>
+    </div>
+    <div class="program-card">
+      <div class="program-icon">🚴</div>
+      <h3>Cycling Studio</h3>
+      <p>Heart-pounding group rides in our immersive studio. Rhythm, music, and pure cardio bliss.</p>
+      <a href="#" class="program-link">Learn More →</a>
+    </div>
+    <div class="program-card">
+      <div class="program-icon">🥗</div>
+      <h3>Nutrition Coaching</h3>
+      <p>Fuel your goals with personalised meal plans and expert nutrition coaching tailored to your body.</p>
+      <a href="#" class="program-link">Learn More →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-tag">Membership Plans</div>
+  <h2 class="section-title">SIMPLE PRICING</h2>
+  <p class="section-subtitle">No hidden fees. Cancel anytime. Pick the plan that matches your ambition.</p>
+  <div class="pricing-grid fade-in">
+    <div class="plan-card">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price"><sup>₹</sup>999<sub>/mo</sub></div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Gym floor access</li>
+        <li>Locker & showers</li>
+        <li>2 group classes/week</li>
+        <li>Fitness assessment</li>
+        <li class="inactive">Personal trainer sessions</li>
+        <li class="inactive">Nutrition coaching</li>
+      </ul>
+      <a href="#join" class="plan-btn plan-btn-outline">Get Started</a>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Elite</div>
+      <div class="plan-price"><sup>₹</sup>1999<sub>/mo</sub></div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Unlimited gym access</li>
+        <li>Locker & showers</li>
+        <li>Unlimited group classes</li>
+        <li>Fitness assessment</li>
+        <li>4 PT sessions/month</li>
+        <li class="inactive">Nutrition coaching</li>
+      </ul>
+      <a href="#join" class="plan-btn plan-btn-gold">Get Started</a>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">Pro</div>
+      <div class="plan-price"><sup>₹</sup>3499<sub>/mo</sub></div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>24/7 gym access</li>
+        <li>Premium locker room</li>
+        <li>Unlimited group classes</li>
+        <li>Monthly body analysis</li>
+        <li>8 PT sessions/month</li>
+        <li>Full nutrition plan</li>
+      </ul>
+      <a href="#join" class="plan-btn plan-btn-outline">Get Started</a>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINERS -->
+<section class="trainers" id="trainers">
+  <div class="section-tag">Meet the Team</div>
+  <h2 class="section-title">EXPERT TRAINERS</h2>
+  <p class="section-subtitle">World-class coaches dedicated to transforming your body and mindset.</p>
+  <div class="trainers-grid fade-in">
+    <div class="trainer-card">
+      <img class="trainer-img" src="https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?w=600" alt="Trainer" />
+      <div class="trainer-info">
+        <div class="trainer-name">Rajiv Sharma</div>
+        <div class="trainer-role">Strength & Conditioning</div>
+      </div>
+    </div>
+    <div class="trainer-card">
+      <img class="trainer-img" src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600" alt="Trainer" />
+      <div class="trainer-info">
+        <div class="trainer-name">Priya Kapoor</div>
+        <div class="trainer-role">Yoga & Mobility Coach</div>
+      </div>
+    </div>
+    <div class="trainer-card">
+      <img class="trainer-img" src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600" alt="Trainer" />
+      <div class="trainer-info">
+        <div class="trainer-name">Arjun Mehta</div>
+        <div class="trainer-role">Boxing & MMA</div>
+      </div>
+    </div>
+    <div class="trainer-card">
+      <img class="trainer-img" src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600" alt="Trainer" />
+      <div class="trainer-info">
+        <div class="trainer-name">Sneha Verma</div>
+        <div class="trainer-role">Nutrition & HIIT</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-tag">What Members Say</div>
+  <h2 class="section-title">REAL RESULTS</h2>
+  <p class="section-subtitle">Join thousands who have already transformed their lives at Iron Forge.</p>
+  <div class="testimonials-grid fade-in">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Lost 18 kg in 5 months. The trainers here are exceptional — they keep you accountable and genuinely care about your progress. Best investment I've ever made."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">AK</div>
+        <div>
+          <div class="author-name">Amit Kumar</div>
+          <div class="author-tag">Member since 2022</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"I was a complete beginner and nervous to join. The team made me feel so welcome. Now I'm competing in my first half-marathon. I couldn't be more grateful!"</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">SR</div>
+        <div>
+          <div class="author-name">Simran Rai</div>
+          <div class="author-tag">Member since 2023</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Top-notch equipment and the boxing classes are seriously fun. The Elite plan gives you incredible value. I train here 5 days a week and never get bored."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">VB</div>
+        <div>
+          <div class="author-name">Varun Bhatia</div>
+          <div class="author-tag">Member since 2021</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner" id="join">
+  <div>
+    <h2>READY TO START<br>YOUR JOURNEY?</h2>
+    <p style="color: rgba(0,0,0,0.6); margin-top: 0.5rem; font-size: 0.9rem;">First 7 days completely free. No credit card required.</p>
+  </div>
+  <a href="mailto:join@ironforge.gym" class="btn-dark">Claim Free Trial</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <span class="footer-logo">IRONFORGE</span>
+      <p class="footer-desc">The premium fitness destination for those who are serious about results. Open 24/7, 365 days a year.</p>
+      <p class="footer-desc" style="margin-top:1rem;">📍 Sarabha Nagar, Ludhiana, Punjab</p>
+      <p class="footer-desc">📞 +91 98765 43210</p>
+    </div>
+    <div class="footer-col">
+      <h4>Programs</h4>
+      <ul>
+        <li><a href="#">Strength & Power</a></li>
+        <li><a href="#">Boxing & MMA</a></li>
+        <li><a href="#">HIIT & CrossFit</a></li>
+        <li><a href="#">Yoga & Mobility</a></li>
+        <li><a href="#">Cycling Studio</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Club</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Our Trainers</a></li>
+        <li><a href="#">Schedule</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Membership FAQ</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 Iron Forge Gym. All rights reserved.</p>
+    <div class="social-links">
+      <a href="#" class="social-link">f</a>
+      <a href="#" class="social-link">in</a>
+      <a href="#" class="social-link">tw</a>
+      <a href="#" class="social-link">yt</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
